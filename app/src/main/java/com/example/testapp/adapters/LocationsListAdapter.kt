@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.*
 import com.example.testapp.R
 import com.example.testapp.models.Location
@@ -11,6 +14,7 @@ import kotlinx.android.synthetic.main.locations_list_item.view.*
 
 class LocationsListAdapter(
     private val onAddClick: (Location) -> Unit,
+    private val onTextChanged: (String, Location) -> Unit,
 ) : ListAdapter<Location, LocationsListAdapter.ItemViewHolder>(DiffCallback()) {
 
     private var commonImagesList: ArrayList<String> = ArrayList()
@@ -19,13 +23,17 @@ class LocationsListAdapter(
         return ItemViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.locations_list_item, parent, false),
-            ::onAddImageClick
+            ::onAddImageClick,
+            ::onTitleTextChanged
         )
+    }
+
+    private fun onTitleTextChanged(title: String, position: Int) {
+        onTextChanged(title, getItem(position))
     }
 
     private fun onAddImageClick(position: Int) {
         onAddClick(getItem(position))
-        commonImagesList.add("Hello")
         notifyDataSetChanged()
     }
 
@@ -36,6 +44,7 @@ class LocationsListAdapter(
     inner class ItemViewHolder(
         view: View,
         private val onAddImageClick: (Int) -> (Unit),
+        private val onTitleTextChanged: (String, Int) -> (Unit),
     ) : RecyclerView.ViewHolder(view) {
 
 
@@ -43,13 +52,20 @@ class LocationsListAdapter(
             itemView.fabAddImage.setOnClickListener {
                 onAddImageClick(adapterPosition)
             }
+            itemView.etLocationTitle.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    val text: String = itemView.etLocationTitle.text.toString()
+                    onTitleTextChanged(text, adapterPosition)
+                    return@setOnEditorActionListener true
+                } else {
+                    false
+                }
+            }
+            //TODO: ADD feature to save title when focus gone or keyboard collapse
         }
 
         fun bind(location: Location) {
             itemView.etLocationTitle.setText(location.title)
-            val childAdapter = ImagesListAdapter(location.imageList)
-            itemView.rvImages.layoutManager = GridLayoutManager(itemView.context, 3)
-            itemView.rvImages.adapter = childAdapter
         }
 
     }
