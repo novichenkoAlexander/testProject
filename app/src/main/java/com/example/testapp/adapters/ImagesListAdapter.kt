@@ -6,17 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.*
 import com.example.testapp.R
+import com.example.testapp.models.Image
 
 
-class ImagesListAdapter(
-    private val imagesList: List<String>,
-) : RecyclerView.Adapter<ImagesListAdapter.ItemViewHolder>() {
+class ImagesListAdapter : ListAdapter<Image, ImagesListAdapter.ItemViewHolder>(ImageDiffCallback()) {
 
-    private var images: List<String> = ArrayList()
-
-    init {
-        images = imagesList
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
@@ -25,24 +19,27 @@ class ImagesListAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(images[position])
-    }
-
-    override fun getItemCount(): Int {
-        return imagesList.size
+        holder.bind(getItem(position))
     }
 
     inner class ItemViewHolder(
-        private val itemView: View,
+        itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val image = itemView.findViewById<TextView>(R.id.ivImageItem)
 
-        fun bind(item: String) {
-            image.text = item
+        fun bind(item: Image) {
+            image.text = item.image
         }
+    }
+}
 
+class ImageDiffCallback : DiffUtil.ItemCallback<Image>() {
+    override fun areItemsTheSame(oldItem: Image, newItem: Image): Boolean {
+        return oldItem == newItem
     }
 
-
+    override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean {
+        return oldItem.id == newItem.id
+    }
 }

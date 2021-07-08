@@ -5,19 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.*
 import com.example.testapp.R
 import com.example.testapp.models.Location
+import kotlinx.android.synthetic.main.locations_list_item.*
 import kotlinx.android.synthetic.main.locations_list_item.view.*
 
 class LocationsListAdapter(
     private val onAddClick: (Location) -> Unit,
     private val onTextChanged: (String, Location) -> Unit,
+    private val onAdapterSet: (Location, ImagesListAdapter) -> Unit,
 ) : ListAdapter<Location, LocationsListAdapter.ItemViewHolder>(DiffCallback()) {
 
-    private var commonImagesList: ArrayList<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
@@ -34,7 +33,6 @@ class LocationsListAdapter(
 
     private fun onAddImageClick(position: Int) {
         onAddClick(getItem(position))
-        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -47,11 +45,13 @@ class LocationsListAdapter(
         private val onTitleTextChanged: (String, Int) -> (Unit),
     ) : RecyclerView.ViewHolder(view) {
 
+        private var imagesAdapter: ImagesListAdapter = ImagesListAdapter()
 
         init {
             itemView.fabAddImage.setOnClickListener {
                 onAddImageClick(adapterPosition)
             }
+
             itemView.etLocationTitle.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     val text: String = itemView.etLocationTitle.text.toString()
@@ -66,6 +66,9 @@ class LocationsListAdapter(
 
         fun bind(location: Location) {
             itemView.etLocationTitle.setText(location.title)
+            itemView.rvImages.adapter = imagesAdapter
+            onAdapterSet(location, imagesAdapter)
+
         }
 
     }

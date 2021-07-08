@@ -76,4 +76,7 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:1.1.1"
     implementation "android.arch.persistence.room:runtime:1.1.1"
 
+    //GSON
+    implementation 'com.google.code.gson:gson:2.8.6'
+
 }

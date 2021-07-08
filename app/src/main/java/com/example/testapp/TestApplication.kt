@@ -4,7 +4,8 @@ import android.app.Application
 import com.example.testapp.database.DataBaseConstructor
 import com.example.testapp.database.MyTestAppDatabase
 import com.example.testapp.repositories.LocationRepository
-import com.example.testapp.screens.LocationViewModel
+import com.example.testapp.screens.viewModels.ImageViewModel
+import com.example.testapp.screens.viewModels.LocationViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.android.viewmodel.dsl.viewModel
@@ -22,15 +23,16 @@ class TestApplication : Application() {
 
     private val viewModels = module {
         viewModel { LocationViewModel(get()) }
-
+        viewModel { ImageViewModel(get()) }
     }
 
     private val dataBaseModule = module {
         single { DataBaseConstructor.create(get()) }
         factory { get<MyTestAppDatabase>().locationsDao() }
+        factory { get<MyTestAppDatabase>().imagesDao() }
     }
 
     private val repositories = module {
-        factory { LocationRepository(get()) }
+        factory { LocationRepository(get(), get()) }
     }
 }

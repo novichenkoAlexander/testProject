@@ -18,5 +18,4 @@ abstract class LocationsDao {
 
     @Query("SELECT * FROM locations")
     abstract fun getLocationsFLow(): Flow<List<Location>>
-
 }

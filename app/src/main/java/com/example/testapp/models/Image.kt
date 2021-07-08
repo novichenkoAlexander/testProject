@@ -1,17 +1,26 @@
 package com.example.testapp.models
 
-import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
 
 
-@Parcelize
-@Entity(tableName = "images")
+@Entity(
+    tableName = "images",
+    foreignKeys = [ForeignKey(
+        entity = Location::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("locationId"),
+        onDelete = ForeignKey.CASCADE,
+    )])
 data class Image(
 
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
 
-    val name: String = "",
-) : Parcelable
+    @ColumnInfo(name = "locationId")
+    val locationId: Long,
+
+    val image: String = "",
+)
