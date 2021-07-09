@@ -22,5 +22,7 @@ data class Image(
     @ColumnInfo(name = "locationId")
     val locationId: Long,
 
-    val image: String = "",
+    val imageUri: String = "",
+
+    val checked: Boolean = false,
 )

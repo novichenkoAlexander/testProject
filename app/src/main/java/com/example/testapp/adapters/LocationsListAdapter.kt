@@ -15,6 +15,7 @@ class LocationsListAdapter(
     private val onAddClick: (Location) -> Unit,
     private val onTextChanged: (String, Location) -> Unit,
     private val onAdapterSet: (Location, ImagesListAdapter) -> Unit,
+    private val onImageClick: (String) -> Unit,
 ) : ListAdapter<Location, LocationsListAdapter.ItemViewHolder>(DiffCallback()) {
 
 
@@ -45,7 +46,7 @@ class LocationsListAdapter(
         private val onTitleTextChanged: (String, Int) -> (Unit),
     ) : RecyclerView.ViewHolder(view) {
 
-        private var imagesAdapter: ImagesListAdapter = ImagesListAdapter()
+        private var imagesAdapter: ImagesListAdapter = ImagesListAdapter(onImageClick)
 
         init {
             itemView.fabAddImage.setOnClickListener {
@@ -61,14 +62,12 @@ class LocationsListAdapter(
                     false
                 }
             }
-            //TODO: ADD feature to save title when focus gone or keyboard collapse
         }
 
         fun bind(location: Location) {
             itemView.etLocationTitle.setText(location.title)
             itemView.rvImages.adapter = imagesAdapter
             onAdapterSet(location, imagesAdapter)
-
         }
 
     }
