@@ -17,12 +17,14 @@ import androidx.room.PrimaryKey
 data class Image(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    var id: Long = 0L,
 
     @ColumnInfo(name = "locationId")
     val locationId: Long,
 
-    val imageUri: String = "",
+    val localImageUri: String = "",
+    var remoteImageUri: String = "",
+    var imageFirebaseId: String = "",
 
     val checked: Boolean = false,
 )

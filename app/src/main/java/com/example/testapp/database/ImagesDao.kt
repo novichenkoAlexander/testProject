@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class ImagesDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun saveImage(image: Image)
+    abstract fun saveImage(image: Image): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun saveImagesList(images: ArrayList<Image>)

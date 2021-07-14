@@ -17,8 +17,8 @@ class LocationRepository(
     val imagesLiveData = imagesDao.getImagesFlow()
 
 
-    suspend fun saveLocation(location: Location) {
-        withContext(Dispatchers.IO) {
+    suspend fun saveLocation(location: Location): Long {
+        return withContext(Dispatchers.IO) {
             locationsDao.saveLocation(location)
         }
     }
@@ -35,8 +35,8 @@ class LocationRepository(
         }
     }
 
-    suspend fun saveImage(image: Image) {
-        withContext(Dispatchers.IO) {
+    suspend fun saveImage(image: Image): Long {
+        return withContext(Dispatchers.IO) {
             imagesDao.saveImage(image)
         }
     }

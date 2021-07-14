@@ -4,7 +4,6 @@ import android.app.Application
 import com.example.testapp.database.DataBaseConstructor
 import com.example.testapp.database.MyTestAppDatabase
 import com.example.testapp.repositories.LocationRepository
-import com.example.testapp.screens.viewModels.ImageViewModel
 import com.example.testapp.screens.viewModels.LocationViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -23,7 +22,6 @@ class TestApplication : Application() {
 
     private val viewModels = module {
         viewModel { LocationViewModel(get()) }
-        viewModel { ImageViewModel(get()) }
     }
 
     private val dataBaseModule = module {
