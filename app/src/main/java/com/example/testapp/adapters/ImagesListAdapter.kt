@@ -24,7 +24,7 @@ class ImagesListAdapter(private val onClick: (String) -> Unit) :
     }
 
     private fun onImageClick(position: Int) {
-        onClick(getItem(position).imageUri)
+        onClick(getItem(position).localImageUri)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -47,7 +47,7 @@ class ImagesListAdapter(private val onClick: (String) -> Unit) :
 
         fun bind(item: Image) {
             Glide.with(itemView)
-                .load(Uri.parse(item.imageUri))
+                .load(Uri.parse(item.localImageUri))
                 .centerCrop()
                 .into(image)
             checkbox.isChecked = item.checked

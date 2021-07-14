@@ -13,7 +13,6 @@ import com.example.testapp.adapters.ImagesListAdapter
 import com.example.testapp.adapters.LocationsListAdapter
 import com.example.testapp.models.Image
 import com.example.testapp.models.Location
-import com.example.testapp.screens.viewModels.ImageViewModel
 import com.example.testapp.screens.viewModels.LocationViewModel
 import com.example.testapp.support.SwipeHelper
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,8 +30,7 @@ class LocationsFragment : Fragment(R.layout.fragment_locations) {
 
     private val viewBinding: FragmentLocationsBinding by viewBinding()
 
-    private val locationViewModel: LocationViewModel by viewModel()
-    private val imageViewModel: ImageViewModel by viewModel()
+    private val viewModel: LocationViewModel by viewModel()
 
     private lateinit var adapter: LocationsListAdapter
 
@@ -50,14 +48,15 @@ class LocationsFragment : Fragment(R.layout.fragment_locations) {
         )
         viewBinding.rvLocations.adapter = adapter
 
-        locationViewModel.locationsLiveData.observe(this.viewLifecycleOwner) {
+        viewModel.locationsLiveData.observe(this.viewLifecycleOwner) {
             adapter.submitList(it)
+            if (it.isEmpty()){
+                viewModel.deleteImagesFromCloudStorage()
+            }
         }
 
         viewBinding.fabAddLocation.setOnClickListener {
-            locationViewModel.saveLocation(
-                Location()
-            )
+            viewModel.saveLocation(Location())
         }
 
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(viewBinding.rvLocations) {
@@ -81,12 +80,13 @@ class LocationsFragment : Fragment(R.layout.fragment_locations) {
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data?.data
 
-            imageViewModel.saveImage(
+            viewModel.saveImage(location,
                 Image(
                     locationId = location.id,
-                    imageUri = data.toString()
+                    localImageUri = data.toString()
                 )
             )
+
         }
     }
 
@@ -98,13 +98,13 @@ class LocationsFragment : Fragment(R.layout.fragment_locations) {
             android.R.color.holo_red_light,
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
-                    locationViewModel.deleteLocation(position)
+                    viewModel.deleteLocation(position)
                 }
             })
     }
 
     private fun onAdapterSet(location: Location, adapter: ImagesListAdapter) {
-        imageViewModel.imagesLiveData.observe(this.viewLifecycleOwner, { images ->
+        viewModel.imagesLiveData.observe(this.viewLifecycleOwner, { images ->
             val imageList = ArrayList<Image>()
             for (image in images) {
                 if (image.locationId == location.id) {
@@ -138,7 +138,7 @@ class LocationsFragment : Fragment(R.layout.fragment_locations) {
     }
 
     private fun onTitleTextChanged(text: String, location: Location) {
-        locationViewModel.updateLocation(
+        viewModel.updateLocation(
             Location(id = location.id, title = text)
         )
     }
